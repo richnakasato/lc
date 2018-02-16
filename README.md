@@ -1,2 +1,2 @@
 # lc
-leetcode workspace
+LeetCode workspace
