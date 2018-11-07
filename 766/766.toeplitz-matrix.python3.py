@@ -67,7 +67,7 @@
 #
 class Solution:
     def isInBounds(self, matrix, i, j):
-        return 0 <= i < len(matrix)
+        return 0 <= i < len(matrix) \
             and 0<= j < len(matrix[0])
 
     def isToeplitzMatrix(self, matrix):
@@ -82,7 +82,7 @@ class Solution:
             return True
         for row in range(len(matrix)):
             for col in range(len(matrix[0])):
-                if self.isInBounds(matrix, row+1, col+1)
+                if self.isInBounds(matrix, row+1, col+1) \
                     and matrix[row][col] != matrix[row+1][col+1]:
                         return False
         return True
