@@ -72,4 +72,17 @@ class Solution:
         :type c: int
         :rtype: List[List[int]]
         """
+        if len(nums) * len(nums[0]) != r * c:
+            return nums
+        aux = list()
+        for row in range(len(nums)):
+            for col in range(len(nums[0])):
+                aux.append(nums[row][col])
+        out = [[None for y in range(c)] for x in range(r)]
+        count = 0
+        for row in range(len(out)):
+            for col in range(len(out[0])):
+                out[row][col] = aux[count]
+                count += 1
+        return out
 
