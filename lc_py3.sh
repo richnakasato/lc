@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/bin/bash -x
 # $1 -> problem number
 
-#leetcode show $1 -gx -l python3 -o $1
+leetcode show $1 -gx -l python3 -o $1
 
-
-for i in {1..5}; do echo $i; done
+#for i in {300..310}; do leetcode show $i -gx -l python3; done
