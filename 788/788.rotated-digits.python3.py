@@ -38,9 +38,32 @@
 # 
 #
 class Solution:
+    def helper(self, n, good, bad):
+        seen_good = False
+        while n:
+            digit = n%10
+            if digit in bad:
+                return False
+            elif digit in good:
+                seen_good = True
+            n//=10
+        return seen_good
+    
     def rotatedDigits(self, N):
         """
         :type N: int
         :rtype: int
         """
-        
+        bad = [3, 4, 7]
+        good = [2, 5, 6, 9]
+        count = 0
+        for i in range(1, N+1):
+            if self.helper(i, good, bad):
+                count+=1
+        return count
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
