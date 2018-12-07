@@ -17,16 +17,6 @@
 #
 # For example, given n = 3, a solution set is:
 #
-#
-# [
-# ⁠ "((()))",
-# ⁠ "(()())",
-# ⁠ "(())()",
-# ⁠ "()(())",
-# ⁠ "()()()"
-# ]
-#
-#
 class Solution:
     def helper(self, lp_count, rp_count, cur_list, res_list):
         if lp_count == 0 and rp_count == 1:
