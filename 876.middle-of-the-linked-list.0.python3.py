@@ -62,4 +62,15 @@ class Solution:
         :type head: ListNode
         :rtype: ListNode
         """
-
+        if head:
+            slow_count = fast_count = 0
+            slow = fast = head
+            while fast:
+                fast = fast.next
+                fast_count+=1
+                temp = fast_count//2
+                if slow_count < temp:
+                    slow = slow.next
+                    slow_count+=1
+            return slow
+        return None
