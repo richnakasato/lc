@@ -3,10 +3,10 @@
 104 Maximum Depth of Binary Tree                                58.6%   Easy
 136 Single Number                                               58.4%   Easy
 94  Binary Tree Inorder Traversal                               54.3%   Medium
-
 238 Product of Array Except Self                                53.3%   Medium
 
 283 Move Zeroes                                                 53.3%   Easy
+
 347 Top K Frequent Elements                                     52.7%   Medium
 46  Permutations                                                52.6%   Medium
 22  Generate Parentheses                                        52.4%   Medium
