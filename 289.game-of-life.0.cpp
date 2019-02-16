@@ -70,8 +70,10 @@ public:
     bool valid_pos(const std::vector<std::vector<int>>& board,
                    const std::tuple<size_t,size_t>& pos)
     {
-        return 0 <= std::get<0>(pos) && std::get<0>(pos) < board.size()
-            && 0 <= std::get<1>(pos) && std::get<1>(pos) < board[0].size();
+        int row = std::get<0>(pos);
+        int elem = std::get<1>(pos);
+        return 0 <= row && row < board.size()
+            && 0 <= elem && elem < board[0].size();
     }
 
     int neighbor_count(const std::vector<std::vector<int>>& board,
@@ -90,13 +92,14 @@ public:
         return neighbor_count;
     }
 
-    bool is_alive(const int& neighbor_count, bool curr_alive)
+    int new_state(const int& neighbor_count, int curr_state)
     {
-        if (neighbor_count < 2 && curr_alive) return false;
-        if (neighbor_count == 3 && !curr_alive) return true;
-        if (neighbor_count > 3 && curr_alive) return false;
-        if ((neighbor_count == 2 || neighbor_count == 3) && curr_alive) return true;
-        return false;
+        if (neighbor_count < 2 && curr_state) return 0;
+        if (neighbor_count == 3 && !curr_state) return 1;
+        if (neighbor_count > 3 && curr_state) return 0;
+        if ((neighbor_count == 2 || neighbor_count == 3)
+                && curr_state) return 1;
+        return 0;
     }
 
     void gameOfLife(vector<vector<int>>& board) {
@@ -104,10 +107,9 @@ public:
         std::vector<std::vector<int>> new_board = board;
         for (size_t row=0; row<board.size(); ++row) {
             for (size_t elem=0; elem<board[0].size(); ++elem) {
-                auto pos = std::make_tuple(row,elem);
-                int neighbors = neighbor_count(board, pos);
-                bool curr_alive = board[row][elem] == 1 ? true : false;
-                new_board[row][elem] = is_alive(neighbors, curr_alive) ? 1 : 0;
+                int neighbors = neighbor_count(board, std::make_tuple(row,elem);
+                int curr_state = board[row][elem];
+                new_board[row][elem] = new_state(neighbors, curr_state);
             }
         }
         for (size_t row=0; row<board.size(); ++row) {
