@@ -32,6 +32,7 @@
  *
  */
 #include <algorithm>
+#include <map>
 #include <vector>
 
 class Solution {
