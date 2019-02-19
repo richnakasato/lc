@@ -38,22 +38,20 @@ class Solution {
 public:
     int lengthOfLIS(vector<int>& nums)
     {
-        int g_max_count = 1;
-        for (size_t i=0; i<nums.size(); ++i) {
-            int l_max_count = 1;
-            int curr_count = 1;
-            int last = nums[i];
-            for (size_t j=i+1; j<nums.size(); ++j) {
-                if (nums[j] >= last) { ++curr_count; }
-                else {
-                    l_max_count = std::max(l_max_count, curr_count);
-                    curr_count = 1;
-                }
-                last = nums[j];
+        if (nums.size() < 2) return nums.size();
+        std::vector<int> memo(nums.size());
+        memo[0] = 1;
+        for (size_t i=1; i<nums.size(); ++i) {
+            int curr_max = memo[0];
+            for (size_t j=0; j<i; ++j) {
+                if (nums[i] > nums[j]) curr_max = std::max(curr_max, memo[j]+1);
             }
-            l_max_count = std::max(l_max_count, curr_count);
-            g_max_count = std::max(g_max_count, l_max_count);
+            memo[i] = curr_max;
         }
-        return g_max_count;
+        int gmax = 0;
+        for (const auto& num : memo) {
+            gmax = std::max(gmax, num);
+        }
+        return gmax;
     }
 };
