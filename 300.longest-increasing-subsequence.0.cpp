@@ -32,28 +32,47 @@
  *
  */
 #include <algorithm>
+#include <map>
 #include <vector>
 
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums)
     {
-        int g_max_count = 1;
+        if (nums.empty()) return 0;
+        std::map<int,int> vals;
+        std::map<int,int> idxs;
         for (size_t i=0; i<nums.size(); ++i) {
-            int l_max_count = 1;
-            int curr_count = 1;
-            int last = nums[i];
-            for (size_t j=i+1; j<nums.size(); ++j) {
-                if (nums[j] >= last) { ++curr_count; }
-                else {
-                    l_max_count = std::max(l_max_count, curr_count);
-                    curr_count = 1;
-                }
-                last = nums[j];
-            }
-            l_max_count = std::max(l_max_count, curr_count);
-            g_max_count = std::max(g_max_count, l_max_count);
+            vals[nums[i]] = i;
+            idxs[i] = nums[i];
         }
-        return g_max_count;
+        int max_count = 0;
+        for (int i=0; i<nums.size(); ++i) {
+            int val = nums[i];
+            int idx = i;
+
+            int count = 1;
+            for (std::map<int,int>::const_iterator it=vals.find(nums[i]);
+                 it != vals.end();
+                 ++it) {
+                if (it->first > val && it->second > idx) {
+                    ++count;
+                    idx = it->second;
+                }
+            }
+            max_count = std::max(max_count, count);
+
+            count = 1;
+            for (std::map<int,int>::const_iterator it=idxs.find(i);
+                 it != idxs.end();
+                 ++it) {
+                if (it->second > val) {
+                    ++count;
+                    val = it->second;
+                }
+            }
+            max_count = std::max(max_count, count);
+        }
+        return max_count;
     }
 };
