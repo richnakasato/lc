@@ -57,7 +57,7 @@ public:
     }
 
     bool helper(std::vector<std::vector<char>>& board,
-                std::vector<std::vector<bool>> avail,
+                std::vector<std::vector<bool>>& avail,
                 std::tuple<int,int> pos,
                 std::string word,
                 int idx)
@@ -66,7 +66,10 @@ public:
         int c = std::get<1>(pos);
         char letter = word[idx++];
         avail[r][c] = false;
-        if (board[r][c] != letter) return false;
+        if (board[r][c] != letter) {
+            avail[r][c] = true;
+            return false;
+        }
         else if (idx == word.size()) {
             return true;
         }
@@ -82,6 +85,7 @@ public:
                 }
             }
         }
+        avail[r][c] = true;
         return false;
     }
 
