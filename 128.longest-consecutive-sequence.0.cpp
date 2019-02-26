@@ -39,11 +39,13 @@ public:
         for (size_t i=0; i<nums.size(); ++i) {
             int num = nums[i];
             int lmax = 1;
-            while (seen.find(num+1) != seen.end()) {
-                lmax += 1;
-                ++num;
+            if (seen.find(num+1) == seen.end()) { // this is the "top" of sequence...
+                while (seen.find(num-1) != seen.end()) { // count down sequence...
+                    ++lmax;
+                    --num;
+                }
+                gmax = std::max(gmax, lmax);
             }
-            gmax = std::max(gmax, lmax);
         }
         return gmax;
     }
