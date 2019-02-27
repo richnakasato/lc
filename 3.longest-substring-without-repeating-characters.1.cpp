@@ -69,8 +69,7 @@ public:
                     glhs = lhs;
                     grhs = rhs;
                 }
-                char dupe = s[rhs];
-                while (s[lhs] != dupe) {
+                while (s[lhs] != s[rhs]) {
                     seen.erase(s[lhs]);
                     ++lhs;
                     --lmax;
