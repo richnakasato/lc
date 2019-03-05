@@ -30,48 +30,23 @@ public:
     {
         if (height.size() < 2) return 0;
 
-        std::vector<int> max_ahead(height.size());
-        int max_seen = 0;
-        for (size_t i=height.size(); i-->0;) {
-            max_ahead[i] = max_seen;
-            max_seen = std::max(max_seen, height[i]);
+        std::vector<int> max_left(height.size());
+        int curr_max = 0;
+        for (size_t i=0; i<max_left.size(); ++i) {
+            curr_max = std::max(curr_max, height[i]);
+            max_left[i] = curr_max;
+        }
+        std::vector<int> max_right(height.size());
+        curr_max = 0;
+        for (size_t i=max_right.size(); i-->0;) {
+            curr_max = std::max(curr_max, height[i]);
+            max_right[i] = curr_max;
         }
 
-        int captured = 0;
-        int blocked = 0;
-        int left = 0;
-        int right = 1;
-        while (left < height.size()) {
-            if (height[left] == 0 || height[left] > max_ahead[left]) {
-                blocked = 0;
-                ++left;
-                right = left + 1;
-            }
-            else {
-                while (right < height.size() && height[right] < height[left]) {
-                    blocked += height[right];
-                    ++right;
-                }
-                if (right < height.size() && height[right] >= height[left]) {
-                    captured += volume(height, left, right) - blocked;
-                    blocked = 0;
-                    left = right;
-                    right = left + 1;
-                }
-                else {
-                    blocked = 0;
-                    ++left;
-                    right = left + 1;
-                }
-            }
+        int total = 0;
+        for (size_t i=0; i<height.size(); ++i) {
+            total += std::min(max_left[i], max_right[i]) - height[i];
         }
-        return captured;
-    }
-
-private:
-    int volume(const std::vector<int>& height, int left, int right)
-    {
-        int min_h = std::min(height[left], height[right]);
-        return min_h * (right-left-1);
+        return total;
     }
 };
