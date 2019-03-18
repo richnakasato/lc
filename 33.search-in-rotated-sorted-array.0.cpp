@@ -45,10 +45,8 @@ class Solution {
         int mid = start + (end-start)/2;
         if (nums[mid] == target) return mid;
         if (nums[mid] > nums[end]) {
-            if (nums[mid] < target && target > nums[end]) {
-                return helper(nums, target, mid+1, end);
-            } // go right
-            else if (nums[mid] > target && target < nums[end]) {
+            if (nums[mid] < target ||
+                nums[end] >= target) {
                 return helper(nums, target, mid+1, end);
             } // go right
             else {
