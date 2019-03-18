@@ -34,8 +34,9 @@ class Solution {
         int pivot = nums[end];
         size_t p_idx = start;
         for (size_t i=start; i<end; ++i) {
-            if (nums[i] < nums[pivot]) {
-                std::swap(nums[i], nums[p_idx++]);
+            if (nums[i] < pivot) {
+                std::swap(nums[i], nums[p_idx]);
+                ++p_idx;
             }
         }
         std::swap(nums[end], nums[p_idx]);
@@ -44,20 +45,23 @@ class Solution {
 
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        int start = 0;
-        int end = nums.size()-1;
-        int kth = 0;
-        while (start < end) {
-            int p_idx = pivot(nums, start, end);
-            // need to figure this part out...
-            kth = nums.size() - p_idx + 1;
-            if (k < p_idx) {
-                start = p_idx+1;
+        size_t start = 0;
+        size_t end = nums.size() - 1;
+        size_t kth = 0;
+        size_t p_idx = 0;
+        while (start <= end) {
+            p_idx = pivot(nums, start, end);
+            kth = nums.size() - p_idx;
+            if (k == kth) {
+                break;
+            }
+            else if (k < kth) {
+                start = p_idx + 1;
             }
             else {
-                end = p_idx-1;
+                end = p_idx - 1;
             }
         }
-        return nums[kth];
+        return nums[p_idx];
     }
 };
