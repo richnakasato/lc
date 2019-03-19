@@ -42,34 +42,39 @@ class Solution {
             if (nums[start]==target) return start;
             else return -1;
         }
+
         int mid = start + (end-start)/2;
+        if (nums[start] == target) return start;
         if (nums[mid] == target) return mid;
+        if (nums[end] == target) return end;
+
         if (nums[mid] > nums[end]) {
-            if (nums[mid] < target ||
-                nums[end] >= target) {
+            if (nums[mid] < target && nums[end] < target) {
                 return helper(nums, target, mid+1, end);
-            } // go right
+            }
+            else if (nums[mid] > target && nums[end] > target) {
+                return helper(nums, target, mid+1, end);
+            }
             else {
                 return helper(nums, target, start, mid);
-            } // go left
+            }
         }
         else {
-            if (target < nums[mid]) {
+            if (target < nums[mid] && target < nums[end]) {
                 return helper(nums, target, start, mid);
-            } // go left
+            }
+            else if (target > nums[mid] && target > nums[end]) {
+                return helper(nums, target, start, mid);
+            }
             else {
                 return helper(nums, target, mid+1, end);
-            } // go right
+            }
         }
     }
 public:
     int search(vector<int>& nums, int target)
     {
         if (nums.empty()) return -1;
-        if (nums.size()==1) {
-            if (nums[0]==target) return 0;
-            else return -1;
-        }
         return helper(nums, target, 0, nums.size()-1);
     }
 };
