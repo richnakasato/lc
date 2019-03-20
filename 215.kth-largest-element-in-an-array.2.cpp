@@ -32,25 +32,26 @@
 class Solution {
     int partition(vector<int>& nums, int start, int end)
     {
-        int pivot = nums[end-1];
+        int tail = end;
+        int pivot = nums[tail];
         int p_idx = start;
-        for (int i=start; i<end-1; ++i) {
+        for (int i=start; i<tail; ++i) {
             if (nums[i] < pivot) {
                 std::swap(nums[i], nums[p_idx]);
                 ++p_idx;
             }
         }
-        std::swap(nums[end-1], nums[p_idx]);
+        std::swap(nums[tail],nums[p_idx]);
         return p_idx;
     }
 public:
     int findKthLargest(vector<int>& nums, int k)
     {
         int start = 0;
-        int end = nums.size();
+        int end = nums.size()-1;
         int p_idx = 0;
         int kth = 0;
-        while (start < end) {
+        while (start <= end) {
             p_idx = partition(nums, start, end);
             kth = nums.size() - p_idx;
             if (kth == k) {
@@ -60,7 +61,7 @@ public:
                 start = p_idx+1;
             }
             else {
-                end = p_idx;
+                end = p_idx-1;
             }
         }
         return nums[p_idx];
