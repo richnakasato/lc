@@ -32,37 +32,51 @@
 #include <algorithm>
 #include <limits>
 #include <unordered_map>
+#include <string>
+
 class Solution {
-    bool all_found(const std::unordered_map<char,int>& counts) {
-        return std::find_if(counts.begin(),
-                            counts.end(),
-                            [](const std::pair<char,int>& e){ e.second == 0; })
-            == counts.end();
+    bool all_found(const std::unordered_map<char,int>& remaining) {
+        //return std::find_if(remaining.begin(),
+        //                    remaining.end(),
+        //                    [](const std::pair<char,int>& e){ e.second > 0; })
+        //    == remaining.end();
+        for (const auto& e : remaining) {
+            if (e.second > 0) return false;
+        }
+        return true;
     }
 public:
     string minWindow(string s, string t) {
         if (s.empty() != t.empty())
             return "";
-        std::unordered_map<char,int> counts;
-        for (const auto& c : t)
-            counts[c] = 0;
+        std::unordered_map<char,int> remaining;
+        for (const auto& c : t) {
+            ++remaining[c];
+        }
         int lhs = 0;
         int rhs = 0;
         int min = std::numeric_limits<int>::max();
-        while (rhs < s.size()) {
-            while (!all_found(counts)) {
+        std::string res;
+        while (lhs < s.size()) {
+            if (remaining.find(s[lhs]) != remaining.end()) {
+                --remaining[s[lhs]];
             }
-            while (!all_foundcounts.find(s[rhs]) == counts.end())
-                ++rhs;
-            rhs = lhs;
-            while (rhs < s.size() && !all_found(counts)) {
-                if (counts.find(s[rhs]) != counts.end())
-                    ++counts[s[rhs]];
-                ++rhs;
+            if (all_found(remaining)) {
+                while (rhs < s.size() && all_found(remaining)) {
+                    if (remaining.find(s[rhs]) != remaining.end()) {
+                        ++remaining[s[rhs]];
+                    }
+                    if (!all_found(remaining)) {
+                        min = std::min(min, lhs-rhs);
+                        if (min == lhs-rhs) {
+                            res = s.substr(rhs, lhs-rhs+1);
+                        }
+                    }
+                    ++rhs;
+                }
             }
-            if (all_found(counts)) {
-                min = std::min(min, rhs-lhs);
-            }
+            ++lhs;
         }
+        return res;
     }
 };
