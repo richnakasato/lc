@@ -88,29 +88,25 @@ public:
         int star = -1;
         int match = -1;
         while (s_idx < s.size()) {
-            if (p_idx < p.size()
-                    && (s[s_idx] == p[p_idx]
-                        || p[p_idx]) == '?') {
+            if (p_idx < p.size() && (s[s_idx] == p[p_idx] || p[p_idx] == '?')) {
                 ++s_idx;
                 ++p_idx;
             }
-            else if (p_idx < p.size()
-                    && p[p_idx] == '*')  {
+            else if (p_idx < p.size() && p[p_idx] == '*')  {
                 star = p_idx++;
                 match = s_idx;
             }
             else if (star != -1) {
                 p_idx = star + 1;
-                match = s_idx++;
+                s_idx = ++match;
             }
             else {
                 return false;
             }
         }
-        while (p_idx < p.size()
-                && p[p_idx] == '*') {
+        while (p_idx < p.size() && p[p_idx] == '*') {
             ++p_idx;
         }
-        return p_idx == p.size() ? true : false;
+        return p_idx == p.size();
     }
 };
