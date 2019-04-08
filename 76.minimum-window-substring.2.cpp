@@ -29,15 +29,20 @@
  *
  *
  */
+#include <algorithm>
+#include <limits>
+#include <unordered_map>
+#include <string>
 class Solution {
-    bool has_all(std::unordered_map<char,int>& pattern)
+    bool has_all(std::unordered_map<char,int> pattern)
     {
-        return find_if(pattern.begin(),
-                       pattern.end(),
-                       [](const auto& e){ return e.second < 0; }) == pattern.end();
+        return std::find_if(pattern.begin(),
+                            pattern.end(),
+                            [](const auto& e){ return e.second < 0; })
+            == pattern.end();
     }
 public:
-    string minWindow(string s, string t)
+    std::string minWindow(std::string s, std::string t)
     {
         if (s.empty() != t.empty()) return "";
         std::unordered_map<char,int> pattern;
