@@ -41,19 +41,18 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-#include <algorithm>
-
 class Solution {
-public:
-    TreeNode* helper(vector<int>& nums, int start_idx, int end_idx) {
-        if (start_idx > end_idx) return NULL;
-        std::vector<int>::size_type mid = start_idx + (end_idx - start_idx)/2;
-        TreeNode* root = new TreeNode(nums[mid]);
-        root->left = helper(nums, start_idx, mid-1);
-        root->right = helper(nums, mid+1, end_idx);
-        return root;
+    TreeNode* helper(const std::vector<int>& nums, int lo, int hi) {
+        if (lo > hi) return nullptr;
+        int mid = lo + ((hi - lo)/2);
+        TreeNode* curr = new TreeNode(nums[mid]);
+        curr->left = helper(nums, lo, mid - 1);
+        curr->right = helper(nums, mid + 1, hi);
+        return curr;
     }
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
-        return helper(nums, 0, nums.size()-1);
+public:
+    TreeNode* sortedArrayToBST(const vector<int>& nums) {
+        if (!nums.size()) return nullptr;
+        return helper(nums, 0, nums.size() - 1);
     }
 };
