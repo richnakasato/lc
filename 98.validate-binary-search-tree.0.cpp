@@ -57,32 +57,62 @@
  */
 #include <limits>
 #include <queue>
+#include <stack>
 class Solution {
-public:
-    bool isValidBST(TreeNode* root) {
-        if (!root) return true;
-        bool done = false;
+    bool check_bounds(long min, int val, long max) {
+        return min < val && val < max;
+    }
+    bool isValidBST_helper(long min, TreeNode* curr, long max) {
+        if (!curr) return true;
+        if (!check_bounds(min, curr->val, max)) return false;
+        return isValidBST_helper(min, curr->left, curr->val) &&
+               isValidBST_helper(curr->val, curr->right, max);
+    }
+    bool isValidBST_rec(TreeNode* root) {
+        long min = std::numeric_limits<long>::min();
+        long max = std::numeric_limits<long>::max();
+        return isValidBST_helper(min, root, max);
+    }
+    bool isValidBST_bfs(TreeNode* root) {
         long min = std::numeric_limits<long>::min();
         long max = std::numeric_limits<long>::max();
         TreeNode* curr = root;
         std::queue<std::tuple<long, TreeNode*, long>> bfs;
+        bfs.push(std::make_tuple(min, curr, max));
+        while (bfs.size()) {
+            auto temp = bfs.front();
+            bfs.pop();
+            min = std::get<0>(temp);
+            curr = std::get<1>(temp);
+            max = std::get<2>(temp);
+            if (curr) {
+                if (!check_bounds(min, curr->val, max)) return false;
+                bfs.push(std::make_tuple(min, curr->left, curr->val));
+                bfs.push(std::make_tuple(curr->val, curr->right, max));
+            }
+        }
+        return true;
+    }
+    bool isValidBST_dfs(TreeNode* root) {
+        bool done = false;
+        long min = std::numeric_limits<long>::min();
+        long max = std::numeric_limits<long>::max();
+        TreeNode* curr = root;
+        std::stack<std::tuple<long, TreeNode*, long>> dfs;
         while (!done) {
             if (curr) {
-                bfs.push(std::make_tuple(min, curr, max));
+                dfs.push(std::make_tuple(min, curr, max));
                 max = curr->val;
                 curr = curr->left;
             }
             else {
-                if (bfs.size()) {
-                    auto temp = bfs.front();
-                    bfs.pop();
+                if (dfs.size()) {
+                    auto temp = dfs.top();
+                    dfs.pop();
                     min = std::get<0>(temp);
                     curr = std::get<1>(temp);
                     max = std::get<2>(temp);
-                    // process...
-                    if (curr->val <= min || curr->val >= max) {
-                        return false;
-                    }
+                    if (!check_bounds(min, curr->val, max)) return false;
                     min = curr->val;
                     curr = curr->right;
                 }
@@ -92,5 +122,11 @@ public:
             }
         }
         return true;
+    }
+public:
+    bool isValidBST(TreeNode* root) {
+        return isValidBST_rec(root);
+        return isValidBST_bfs(root);
+        return isValidBST_dfs(root);
     }
 };
