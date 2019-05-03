@@ -125,8 +125,8 @@ class Solution {
     }
 public:
     bool isValidBST(TreeNode* root) {
-        return isValidBST_rec(root);
-        return isValidBST_bfs(root);
+        //return isValidBST_rec(root);
+        //return isValidBST_bfs(root);
         return isValidBST_dfs(root);
     }
 };
