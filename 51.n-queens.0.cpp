@@ -119,31 +119,24 @@ class Solution {
         }
         return results;
     }
-    void helper(std::vector<std::string>& queens,
+    void helper(int count,
+                int target,
+                int avail,
+                std::vector<std::string>& queens,
                 std::vector<std::vector<bool>>& attacks,
                 std::vector<std::vector<std::string>>& results) {
-        bool no_moves = true;
-        int queen_count = 0;
-        for (int r=0; r<queens.size(); ++r) {
-            for (int c=0; c<queens[0].size(); ++c) {
-                if (queens[r][c] != 'Q' && !attacks[r][c]) {
-                    no_moves = false;
-                    break;
-                }
-                if (queens[r][c] == 'Q') ++queen_count;
-            }
-        }
-        if (queen_count == queens.size()) {
+        if (count == target) {
             results.push_back(queens);
             return;
         }
+        if (count + avail < target) return;
         for (int r=0; r<queens.size(); ++r) {
             for (int c=0; c<queens[r].size(); ++c) {
                 if (queens[r][c] != 'Q' && !attacks[r][c]) {
                     queens[r][c] = 'Q';
-                    std::vector<std::tuple<int,int>> new_attacks =
-                        set_attacks(queens, attacks, r, c);
-                    helper(queens, attacks, results);
+                    auto new_attacks = set_attacks(queens, attacks, r, c);
+                    helper(count+1, target, avail - 1 - new_attacks.size(),
+                           queens, attacks, results);
                     unset_attacks(attacks, new_attacks);
                     queens[r][c] = '.';
                 }
@@ -153,11 +146,12 @@ class Solution {
     }
 public:
     std::vector<std::vector<std::string>> solveNQueens(int n) {
+        int count = 0;
         std::vector<std::string> queens(n, std::string(n, '.'));
         std::vector<std::vector<bool>> attacks(n, std::vector(n, false));
         std::vector<std::vector<std::string>> results;
         if (n < 1) return results;
-        helper(queens, attacks, results);
+        helper(count, n, n*n, queens, attacks, results);
         return results;
     }
 };
