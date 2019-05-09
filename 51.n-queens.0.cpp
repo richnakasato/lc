@@ -53,10 +53,12 @@ class Solution {
             attacks[row][col] = false;
         }
     }
+
     std::vector<std::tuple<int,int>> set_attacks(
             std::vector<std::string>& queens,
             std::vector<std::vector<bool>>& attacks,
-            int row, int col) {
+            int row, int col)
+    {
         std::vector<std::tuple<int,int>> results;
         for (int r=0; r<queens.size(); ++r) {
             if (queens[r][col] != 'Q' && !attacks[r][col]) {
@@ -73,58 +75,33 @@ class Solution {
         }
         int max_r = queens.size();
         int max_c = queens[row].size();
-        int r = row-1;
-        int c = col-1;
-        while (0 <= r && r < max_r && 0 <= c && c < max_c) {
-            if (queens[r][c] != 'Q' && !attacks[r][c])
-            {
-                attacks[r][c] = true;
-                results.push_back(std::make_tuple(r, c));
+        auto diags = std::vector<std::tuple<int,int>>();
+        diags.push_back(std::make_tuple(-1,-1));
+        diags.push_back(std::make_tuple(-1,+1));
+        diags.push_back(std::make_tuple(+1,+1));
+        diags.push_back(std::make_tuple(+1,-1));
+        for (const auto& diag : diags) {
+            int r = row + std::get<0>(diag);
+            int c = col + std::get<1>(diag);
+            while (0 <= r && r < max_r && 0 <= c && c < max_c) {
+                if (queens[r][c] != 'Q' && !attacks[r][c]) {
+                    attacks[r][c] = true;
+                    results.push_back(std::make_tuple(r, c));
+                }
+                r += std::get<0>(diag);
+                c += std::get<1>(diag);
             }
-            --r;
-            --c;
-        }
-        r = row-1;
-        c = col+1;
-        while (0 <= r && r < max_r && 0 <= c && c < max_c) {
-            if (queens[r][c] != 'Q' && !attacks[r][c])
-            {
-                attacks[r][c] = true;
-                results.push_back(std::make_tuple(r, c));
-            }
-            --r;
-            ++c;
-        }
-        r = row+1;
-        c = col+1;
-        while (0 <= r && r < max_r && 0 <= c && c < max_c) {
-            if (queens[r][c] != 'Q' && !attacks[r][c])
-            {
-                attacks[r][c] = true;
-                results.push_back(std::make_tuple(r, c));
-            }
-            ++r;
-            ++c;
-        }
-        r = row+1;
-        c = col-1;
-        while (0 <= r && r < max_r && 0 <= c && c < max_c) {
-            if (queens[r][c] != 'Q' && !attacks[r][c])
-            {
-                attacks[r][c] = true;
-                results.push_back(std::make_tuple(r, c));
-            }
-            ++r;
-            --c;
         }
         return results;
     }
+
     void helper(int count,
                 int target,
                 int avail,
                 std::vector<std::string>& queens,
                 std::vector<std::vector<bool>>& attacks,
-                std::vector<std::vector<std::string>>& results) {
+                std::vector<std::vector<std::string>>& results)
+    {
         if (count == target) {
             results.push_back(queens);
             return;
@@ -144,8 +121,10 @@ class Solution {
         }
         return;
     }
+
 public:
-    std::vector<std::vector<std::string>> solveNQueens(int n) {
+    std::vector<std::vector<std::string>> solveNQueens(int n)
+    {
         int count = 0;
         std::vector<std::string> queens(n, std::string(n, '.'));
         std::vector<std::vector<bool>> attacks(n, std::vector(n, false));
