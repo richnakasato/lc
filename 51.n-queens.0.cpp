@@ -41,6 +41,7 @@
  *
  */
 #include <string>
+#include <unordered_map>
 #include <vector>
 class Solution {
     void unset_attacks(std::vector<std::vector<bool>>& attacks,
@@ -95,15 +96,31 @@ class Solution {
         return results;
     }
 
+    std::string join_board(std::vector<std::string> board) {
+        std::string res;
+        for (const auto& row : board) {
+            res += row;
+        }
+        return res;
+    }
+
+    std::vector<std::string> split_board(std::string board, int n) {
+        std::vector<std::string> res;
+        for (int i=0; i<board.size(); i+=n) {
+            res.push_back(board.substr(i,n));
+        }
+        return res;
+    }
+
     void helper(int count,
                 int target,
                 int avail,
                 std::vector<std::string>& queens,
                 std::vector<std::vector<bool>>& attacks,
-                std::vector<std::vector<std::string>>& results)
+                std::unordered_set<std::string>& results)
     {
         if (count == target) {
-            results.push_back(queens);
+            results.insert(join_board(queens));
             return;
         }
         if (count + avail < target) return;
@@ -128,9 +145,13 @@ public:
         int count = 0;
         std::vector<std::string> queens(n, std::string(n, '.'));
         std::vector<std::vector<bool>> attacks(n, std::vector(n, false));
-        std::vector<std::vector<std::string>> results;
-        if (n < 1) return results;
+        std::unordered_set<std::string> results;
+        if (n < 1) return std::vector<std::vector<std::string>>();
         helper(count, n, n*n, queens, attacks, results);
-        return results;
+        std::vector<std::vector<std::string>> temp;
+        for (const auto& e : results) {
+            temp.push_back(split_board(e, n));
+        }
+        return temp;
     }
 };
