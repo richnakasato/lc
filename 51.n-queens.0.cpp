@@ -44,6 +44,44 @@
 #include <unordered_map>
 #include <vector>
 class Solution {
+    bool is_safe(std::vector<std::string> board, int row, int col) {
+        if (!board.size()) return true;
+        if (board[row][col]) return false;
+        for (auto r=0; r<board.size(); ++r) {
+            if (board[r][col]) return false;
+        }
+        for (auto c=0; c<board[0].size(); ++c) {
+            if (board[row][c]) return false;
+        }
+        auto max_r = board.size();
+        auto max_c = board[0].size();
+        auto diags = std::vector<std::tuple<int,int>>();
+        diags.push_back(std::make_tuple(-1,-1));
+        diags.push_back(std::make_tuple(-1,+1));
+        diags.push_back(std::make_tuple(+1,+1));
+        diags.push_back(std::make_tuple(+1,-1));
+        for (const auto& d : diags) {
+            auto r = row + std::get<0>(d);
+            auto c = col + std::get<1>(d);
+            while (0 <= r && r < max_r && 0 <= c && c < max_c) {
+                if (board[r][c]) {
+                    return false;
+                }
+                r += std::get<0>(d);
+                c += std::get<1>(d);
+            }
+        }
+        return true;
+    }
+
+    void place(std::vector<std::string> board, int row, int col, int queen) {
+        return;
+    }
+
+    void unplace(std::vector<std::string> board, int row, int col) {
+        return;
+    }
+
     void unset_attacks(std::vector<std::vector<bool>>& attacks,
                        std::vector<std::tuple<int,int>>& list_of_attacks)
     {
