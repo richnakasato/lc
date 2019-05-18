@@ -46,12 +46,9 @@
 class Solution {
     bool is_safe(std::vector<std::string> board, int row, int col) {
         if (!board.size()) return true;
-        if (board[row][col]) return false;
-        for (auto r=0; r<board.size(); ++r) {
-            if (board[r][col]) return false;
-        }
+        if (board[row][col] != '.') return false;
         for (auto c=0; c<board[0].size(); ++c) {
-            if (board[row][c]) return false;
+            if (board[row][c] != '.') return false;
         }
         auto max_r = board.size();
         auto max_c = board[0].size();
@@ -64,7 +61,7 @@ class Solution {
             auto r = row + std::get<0>(d);
             auto c = col + std::get<1>(d);
             while (0 <= r && r < max_r && 0 <= c && c < max_c) {
-                if (board[r][c]) {
+                if (board[r][c] != '.') {
                     return false;
                 }
                 r += std::get<0>(d);
@@ -74,64 +71,14 @@ class Solution {
         return true;
     }
 
-    void place(std::vector<std::string> board, int row, int col, int queen) {
+    void place(std::vector<std::string> board, int row, int col) {
+        board[row][col] = 'Q';
         return;
     }
 
     void unplace(std::vector<std::string> board, int row, int col) {
+        board[row][col] = '.';
         return;
-    }
-
-    void unset_attacks(std::vector<std::vector<bool>>& attacks,
-                       std::vector<std::tuple<int,int>>& list_of_attacks)
-    {
-        if (!list_of_attacks.size()) return;
-        for (const auto& attack : list_of_attacks) {
-            int row = std::get<0>(attack);
-            int col = std::get<1>(attack);
-            attacks[row][col] = false;
-        }
-    }
-
-    std::vector<std::tuple<int,int>> set_attacks(
-            std::vector<std::string>& queens,
-            std::vector<std::vector<bool>>& attacks,
-            int row, int col)
-    {
-        std::vector<std::tuple<int,int>> results;
-        for (int r=0; r<queens.size(); ++r) {
-            if (queens[r][col] != 'Q' && !attacks[r][col]) {
-                attacks[r][col] = true;
-                results.push_back(std::make_tuple(r, col));
-            }
-        }
-        for (int c=0; c<queens[row].size(); ++c) {
-            if (queens[row][c] != 'Q' && !attacks[row][c])
-            {
-                attacks[row][c] = true;
-                results.push_back(std::make_tuple(row, c));
-            }
-        }
-        int max_r = queens.size();
-        int max_c = queens[row].size();
-        auto diags = std::vector<std::tuple<int,int>>();
-        diags.push_back(std::make_tuple(-1,-1));
-        diags.push_back(std::make_tuple(-1,+1));
-        diags.push_back(std::make_tuple(+1,+1));
-        diags.push_back(std::make_tuple(+1,-1));
-        for (const auto& diag : diags) {
-            int r = row + std::get<0>(diag);
-            int c = col + std::get<1>(diag);
-            while (0 <= r && r < max_r && 0 <= c && c < max_c) {
-                if (queens[r][c] != 'Q' && !attacks[r][c]) {
-                    attacks[r][c] = true;
-                    results.push_back(std::make_tuple(r, c));
-                }
-                r += std::get<0>(diag);
-                c += std::get<1>(diag);
-            }
-        }
-        return results;
     }
 
     std::string join_board(std::vector<std::string> board) {
@@ -150,11 +97,9 @@ class Solution {
         return res;
     }
 
-    void helper(int count,
+    void helper(std::vector<std::string>& queens,
+                int count,
                 int target,
-                int avail,
-                std::vector<std::string>& queens,
-                std::vector<std::vector<bool>>& attacks,
                 std::unordered_set<std::string>& results)
     {
         if (count == target) {
