@@ -44,9 +44,8 @@
 #include <unordered_map>
 #include <vector>
 class Solution {
-    bool is_safe(std::vector<std::string> board, int row, int col) {
+    bool is_safe(const std::vector<std::string>& board, int row, int col) {
         if (!board.size()) return true;
-        if (board[row][col] != '.') return false;
         for (auto c=0; c<board[0].size(); ++c) {
             if (board[row][c] != '.') return false;
         }
@@ -71,70 +70,40 @@ class Solution {
         return true;
     }
 
-    void place(std::vector<std::string> board, int row, int col) {
+    void place(std::vector<std::string>& board, int row, int col) {
         board[row][col] = 'Q';
         return;
     }
 
-    void unplace(std::vector<std::string> board, int row, int col) {
+    void unplace(std::vector<std::string>& board, int row, int col) {
         board[row][col] = '.';
         return;
     }
 
-    std::string join_board(std::vector<std::string> board) {
-        std::string res;
-        for (const auto& row : board) {
-            res += row;
-        }
-        return res;
-    }
-
-    std::vector<std::string> split_board(std::string board, int n) {
-        std::vector<std::string> res;
-        for (int i=0; i<board.size(); i+=n) {
-            res.push_back(board.substr(i,n));
-        }
-        return res;
-    }
-
-    void helper(std::vector<std::string>& queens,
-                int count,
+    void helper(std::vector<std::string>& board,
+                int queen,
                 int target,
-                std::unordered_set<std::string>& results)
+                std::vector<std::vector<std::string>>& results)
     {
-        if (count == target) {
-            results.insert(join_board(queens));
+        if (queen == target) {
+            results.push_back(board);
             return;
         }
-        if (count + avail < target) return;
-        for (int r=0; r<queens.size(); ++r) {
-            for (int c=0; c<queens[r].size(); ++c) {
-                if (queens[r][c] != 'Q' && !attacks[r][c]) {
-                    queens[r][c] = 'Q';
-                    auto new_attacks = set_attacks(queens, attacks, r, c);
-                    helper(count+1, target, avail - 1 - new_attacks.size(),
-                           queens, attacks, results);
-                    unset_attacks(attacks, new_attacks);
-                    queens[r][c] = '.';
-                }
+        for (int row=0; row<board.size(); ++row) {
+            if (is_safe(board, row, queen)) {
+                place(board, row, queen);
+                helper(board, queen+1, target, results);
+                unplace(board, row, queen);
             }
         }
         return;
     }
 
 public:
-    std::vector<std::vector<std::string>> solveNQueens(int n)
-    {
-        int count = 0;
-        std::vector<std::string> queens(n, std::string(n, '.'));
-        std::vector<std::vector<bool>> attacks(n, std::vector(n, false));
-        std::unordered_set<std::string> results;
-        if (n < 1) return std::vector<std::vector<std::string>>();
-        helper(count, n, n*n, queens, attacks, results);
-        std::vector<std::vector<std::string>> temp;
-        for (const auto& e : results) {
-            temp.push_back(split_board(e, n));
-        }
-        return temp;
+    std::vector<std::vector<std::string>> solveNQueens(int n) {
+        auto results = std::vector<std::vector<std::string>>();
+        auto board = std::vector<std::string>(n, std::string(n, '.'));
+        helper(board, 0, n, results);
+        return results;
     }
 };
