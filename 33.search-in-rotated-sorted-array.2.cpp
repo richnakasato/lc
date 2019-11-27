@@ -48,16 +48,24 @@ public:
             if (target == nums[lo]) return lo;
             if (target == nums[hi]) return hi;
             if (target == nums[mid]) return mid;
-            if (nums[lo] < nums[mid] && nums[mid] < nums[hi]) { // no split
-                // target < nums[mid], go left
-                // taget > nums[mid], go right
+            if (nums[lo] < nums[mid] && nums[mid] < nums[hi]) {
+                if (target < nums[mid]) {
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
             } else if (nums[lo] > nums[mid] && nums[mid] < nums[hi]) { // left split
-                // target > nums[mid] && < nums[hi], go right
-                // else, go left
-
+                if (target > nums[mid] && target < nums[hi]) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid - 1;
+                }
             } else { // nums[lo] < nums[mid] && nums[mid] > nums[hi], right split
-                // target < nums[mid] && > nums[lo], go left
-                // else, go right
+                if (target < nums[mid] && target > nums[lo]) {
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
             }
         }
         return -1;
