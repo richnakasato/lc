@@ -43,6 +43,15 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+truct QueueNode {
+    TreeNode* node;
+    int level;
+    QueueNode(TreeNode* n, int l) {
+        node = n;
+        level = l;
+    }
+};
+
 class Solution {
 public:
     vector<vector<int>> levelOrder(TreeNode* root) {
