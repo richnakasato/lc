@@ -57,8 +57,22 @@ public:
             auto dest_node = pair[0];
             adj_list[src_node].push_back(dest_node);
         }
-        for (auto& v : adj_list) {
+        for (auto i=0; i<adj_list.size(); ++i) {
+            std::queue<int> to_visit;
+            std::unordered_set<int> visited;
+            to_visit.push(i);
+            while (!to_visit.empty()) {
+                auto curr = to_visit.front();
+                to_visit.pop();
+                visited.insert(curr);
+                for (auto n : adj_list[curr]) {
+                    if (visited.find(n) != visited.end()) {
+                        return false;
+                    }
+                    to_visit.push(n);
+                }
+            }
         }
-        return false;
+        return true;
     }
 };
