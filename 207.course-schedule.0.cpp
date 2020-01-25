@@ -48,30 +48,37 @@
  */
 class Solution {
 public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        if (!numCourses) return true;
-        if (prerequisites.empty()) return true;
-        std::vector<std::vector<int>> adj_list(numCourses, std::vector<int>());
-        for (auto& pair : prerequisites) {
+    std::vector<std::vector<int>> graph_builder(
+            int num_courses,
+            const std::vector<std::vector<int>>& reqs) {
+        std::vector<std::vector<int>> adj_list(num_courses,
+                                               std::vector<int>());
+        for (auto& pair : reqs) {
             auto src_node = pair[1];
             auto dest_node = pair[0];
             adj_list[src_node].push_back(dest_node);
         }
+        return adj_list;
+    }
+    bool cycle_detect(int curr,
+                      const std::vector<std::vector<int>>& adj_lists,
+                      std::vector<bool>& visited) {
+        if (visited[curr]) return true;
+        visited[curr] = true;
+        for (int i=0; i<adj_lists[curr].size(); ++i) {
+            int next = adj_lists[curr][i];
+            if (cycle_detect(next, adj_lists, visited)) return true;
+        }
+        visited[curr] = false;
+        return false;
+    }
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        if (!numCourses) return true;
+        if (prerequisites.empty()) return true;
+        auto adj_list = graph_builder(numCourses, prerequisites);
         for (auto i=0; i<adj_list.size(); ++i) {
-            std::queue<int> to_visit;
-            std::unordered_set<int> visited;
-            to_visit.push(i);
-            while (!to_visit.empty()) {
-                auto curr = to_visit.front();
-                to_visit.pop();
-                visited.insert(curr);
-                for (auto n : adj_list[curr]) {
-                    if (visited.find(n) != visited.end()) {
-                        return false;
-                    }
-                    to_visit.push(n);
-                }
-            }
+            std::vector<bool> visited(numCourses, false);
+            if (cycle_detect(i, adj_list, visited)) return false;
         }
         return true;
     }
